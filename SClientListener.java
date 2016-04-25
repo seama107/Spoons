@@ -1,5 +1,5 @@
 /*
-SClient.java
+SClientListener.java
 Author: Michael Seaman
 
 The client for the "Spoons" Final Project
@@ -17,7 +17,7 @@ import java.net.NetworkInterface;
 import java.util.Scanner;
 
 
-public class SClient
+public class SClientListener implements Runnable
 {
 
 	final static String BCAST_ADDR = "224.0.0.7";
@@ -28,15 +28,15 @@ public class SClient
 	private InetSocketAddress broadcastAddress;
 	private byte[] buf;
 
-	public SClient()
+	public SClientListener()
 	{
 		java.lang.System.setProperty("java.net.preferIPv4Stack" , "true");
 		buf = new byte[256];
 		receiveSocket = null;
-		sendSocket = null;
+		//sendSocket = null;
 		try
 		{
-			sendSocket = new DatagramSocket();
+			//sendSocket = new DatagramSocket();
 			broadcastAddress = new  InetSocketAddress(BCAST_ADDR, BCAST_PORT);
 			receiveSocket = new MulticastSocket(broadcastAddress);
 			NetworkInterface networkInterface = NetworkInterface.getByName("en0");
@@ -49,41 +49,43 @@ public class SClient
 		}
 	}
 
-	public static void main(String[] args)  throws Exception
+	public void run()
 	{
-		SClient sc = new SClient();
-		SClientListener listener = new SClientListener();
-		Thread listenerThread = new Thread(listener);
-		listenerThread.start();
-		sc.loopForUserInput();
-		System.out.println("Client closing down.");
-		sc.shutDown();
-	}
-
-	public void loopForUserInput() throws IOException
-	{
-		Scanner keyboard = new Scanner(System.in);
-		String userInput;
-		while(true)
+		String streamInput;
+		try
 		{
-			userInput = keyboard.nextLine();
-			if(userInput.toLowerCase().equals("q"))
+			boolean running = true;
+			while(running)
 			{
-				break;
-			}
-			else
-			{
-				sendMessage(userInput);
+				streamInput = recieveMessage();
+				switch(processMessage(streamInput))
+				{
+					case 0:
+						break;
+					case 1:
+						streamInput = "SERVER: " + streamInput.substring(1);
+						System.out.println(streamInput);
+						break;
+					case 2:
+						System.out.println("Server closing down. Press 'q' to quit.");
+						running = false;
+						break;
+				}
 			}
 		}
-
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("Press 'q' to quit.");
+		}
+		shutDown();
 	}
 
-	public void sendMessage(String message) throws IOException
+	/*public void sendMessage(String message) throws IOException
 	{
 		DatagramPacket msgPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, broadcastAddress);
 		sendSocket.send(msgPacket);
-	}
+	}*/
 
 	public String recieveMessage() throws IOException
 	{
@@ -93,6 +95,26 @@ public class SClient
 		buf = new byte[256];
 		return message;
 	}
+
+	public int processMessage(String message)
+	{
+		if(message.trim().equals("qq"))
+		{
+			//Returns 1 for a qq message, meaning the server is closing.
+			return 2;
+		}
+		else if(message.length() > 0 && message.charAt(0) == '0')
+		{
+			//Message from the server, return 1, indicating it should be printed
+			return 1;
+		}
+		else
+		{
+			//Message not to be displayed
+			return 0;
+		}
+	}
+
 
 	public void shutDown()
 	{
@@ -105,7 +127,7 @@ public class SClient
 			e.printStackTrace();
 		}
 		receiveSocket.close();
-		sendSocket.close();
+		//sendSocket.close();
 	}
 
 
