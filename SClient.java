@@ -54,9 +54,12 @@ public class SClient
 			sendSocket = new DatagramSocket();
 			localSendAddress = new InetSocketAddress(InetAddress.getLocalHost().getHostAddress(), sendSocket.getLocalPort());
 			broadcastAddress = new  InetSocketAddress(BCAST_ADDR, BCAST_PORT);
-			receiveSocket = new MulticastSocket(broadcastAddress);
-			NetworkInterface networkInterface = NetworkInterface.getByName("en0");
-			receiveSocket.joinGroup(broadcastAddress, networkInterface);
+			InetAddress broadcastAddressNotSocket = InetAddress.getByName(BCAST_ADDR);
+			//receiveSocket = new MulticastSocket(broadcastAddress);
+			receiveSocket = new MulticastSocket(BCAST_PORT);
+			//NetworkInterface networkInterface = NetworkInterface.getByName("en0");
+			//receiveSocket.joinGroup(broadcastAddress, networkInterface);
+			receiveSocket.joinGroup(broadcastAddressNotSocket);
 
 			SClientListener listener = new SClientListener(localSendAddress);
 			Thread listenerThread = new Thread(listener);

@@ -3,9 +3,10 @@ SClientListener.java
 Author: Michael Seaman
 
 The client for the "Spoons" Final Project
-V0.4: Players are handed an initial starting hand
-The rest of the deck is stored on the server
-Created Deck and Card classes
+V0.5: Game mechanics implemented: Swapping, drawing, passing, and spoon taking
+Interface for client implemented
+extended card encryption
+SGameBoard.java created
 */
 
 import java.io.IOException;
@@ -49,9 +50,14 @@ public class SClientListener implements Runnable
 			sendSocket = new DatagramSocket();
 			localSendAddress = lsa;
 			broadcastAddress = new  InetSocketAddress(BCAST_ADDR, BCAST_PORT);
-			receiveSocket = new MulticastSocket(broadcastAddress);
-			NetworkInterface networkInterface = NetworkInterface.getByName("en0");
-			receiveSocket.joinGroup(broadcastAddress, networkInterface);
+			InetAddress broadcastAddressNotSocket = InetAddress.getByName(BCAST_ADDR);
+
+			//receiveSocket = new MulticastSocket(broadcastAddress);
+			receiveSocket = new MulticastSocket(BCAST_PORT);
+			//NetworkInterface networkInterface = NetworkInterface.getByName("en0");
+			//receiveSocket.joinGroup(broadcastAddress, networkInterface);
+			receiveSocket.joinGroup(broadcastAddressNotSocket);
+
 		}
 		catch (IOException e)
 		{

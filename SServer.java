@@ -44,11 +44,16 @@ public class SServer
 		playerList = new ArrayList<SPlayer>();
 		try
 		{
+			//broadcastAddress = new InetSocketAddress(BCAST_ADDR, BCAST_PORT);
 			broadcastAddress = new InetSocketAddress(BCAST_ADDR, BCAST_PORT);
+			InetAddress broadcastAddressNotSocket = InetAddress.getByName(BCAST_ADDR);
+
 			sendSocket = new DatagramSocket();
-			receiveSocket = new MulticastSocket(broadcastAddress);
-			NetworkInterface networkInterface = NetworkInterface.getByName("en0");
-			receiveSocket.joinGroup(broadcastAddress, networkInterface);
+			//receiveSocket = new MulticastSocket(broadcastAddress);
+			receiveSocket = new MulticastSocket(BCAST_PORT);
+			//NetworkInterface networkInterface = NetworkInterface.getByName("en0");
+			//receiveSocket.joinGroup(broadcastAddress, networkInterface);
+			receiveSocket.joinGroup(broadcastAddressNotSocket);
 		}
 		catch (IOException e)
 		{
