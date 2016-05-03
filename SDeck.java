@@ -79,7 +79,7 @@ public class SDeck extends ArrayList<SCard>
 			ArrayList<String> lines = c.toPrettyString();
 			for (int i = 0; i < 9; ++i) 
 			{
-				output.set(i, output.get(i) + lines.get(i));
+				output.set(i, output.get(i) + " " + lines.get(i));
 			}
 		}
 		return output;

@@ -3,8 +3,10 @@ SClient.java
 Author: Michael Seaman
 
 The client for the "Spoons" Final Project
-V0.3: The Game now starts properly
-Created the Player and RichMessage classes
+V0.5: Game mechanics implemented: Swapping, drawing, passing, and spoon taking
+Interface for client implemented
+extended card encryption
+SGameBoard.java created
 */
 
 import java.io.IOException;
@@ -61,9 +63,9 @@ public class SClient
 			listenerThread.start();
 
 			//Connecting with server
-			sendMessage("h" + username);
+			sendRaw("h" + username);
 			String rcvMessage = recieveNextIMessage().trim();
-			if(!(rcvMessage.equals("i" + username)))
+			if(!(rcvMessage.substring(0, rcvMessage.length() -1).equals("i" + username)))
 			{
 				throw new IOException("Could not connect with Server.");
 			}
@@ -105,11 +107,21 @@ public class SClient
 
 	}
 
-	public void sendMessage(String message) throws IOException
+	public void sendRaw(String message) throws IOException
 	{
 		DatagramPacket msgPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, broadcastAddress);
 		sendSocket.send(msgPacket);
 	}
+
+	public void sendMessage(String message) throws IOException
+	{
+		sendRaw("c" + message);
+	}
+
+	/*public void sendCommand(String message) throws IOException
+	{
+		sendRaw("c" + message);
+	}*/
 
 	public String recieveMessage() throws IOException, SocketTimeoutException
 	{
@@ -162,7 +174,5 @@ public class SClient
 	{
 		return username;
 	}
-
-
 
 }

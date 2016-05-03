@@ -21,7 +21,7 @@ public class SCard
 	public SCard()
 	{
 		//calls the number constructor, ace of clubs
-		this(0);
+		this(52);
 	}
 
 	public SCard(int cn)
@@ -57,29 +57,61 @@ public class SCard
 		return (rankRepresentation.length() > 1 ? "X" : rankRepresentation) + symbol;
 	}
 
+	public static SCard blankCard()
+	{
+		return cardWithNumber(52);
+	}
+
 	public static SCard decrypt(String rr, String s)
 	{
 		//just an easier name to remember than cardWithRRandSym()
 		return SCard.cardWithRRandSym(rr, s);
 	}
 
+	public boolean equals(SCard other)
+	{
+		return cardNumber == other.cardNumber;
+	}
+
 	public String toString()
 	{
-		return rankString + " of " + suit;
+		if(cardNumber < 52)
+		{
+			return rankString + " of " + suit;
+		}
+		else
+		{
+			return "Blank Card";
+		}
 	}
 
 	public ArrayList<String> toPrettyString()
 	{
 		ArrayList<String> lines = new ArrayList<String>();
-		lines.add("┌─────────┐");
-        lines.add(String.format("│%2s       │", rankRepresentation));
-        lines.add("│         │");
-        lines.add("│         │");
-        lines.add(String.format("│    %1s    │", symbol));
-        lines.add("│         │");
-        lines.add("│         │");
-        lines.add(String.format("│       %2s│", rankRepresentation));
-        lines.add("└─────────┘");
+
+		if(cardNumber >= 52)
+		{
+			//for a blank card
+			lines.add("┌─────────┐");
+			for(int i = 0; i < 7; ++i)
+			{
+				lines.add("│░░░░░░░░░│");
+			}
+			lines.add("└─────────┘");
+		}
+		else
+		{
+			//not a blank card
+			lines.add("┌─────────┐");
+	        lines.add(String.format("│%2s       │", rankRepresentation));
+	        lines.add("│         │");
+	        lines.add("│         │");
+	        lines.add(String.format("│    %1s    │", symbol));
+	        lines.add("│         │");
+	        lines.add("│         │");
+	        lines.add(String.format("│       %2s│", rankRepresentation));
+	        lines.add("└─────────┘");
+	    }
         return lines;
 	}
 
@@ -107,6 +139,8 @@ public class SCard
 			case "K":
 				cardNumber += 12;
 				break;
+			case "B":
+				break;
 			default:
 				cardNumber = Integer.parseInt(rr) - 1;
 				break;
@@ -123,8 +157,11 @@ public class SCard
 			case "♥":
 				cardNumber += 26;
 				break;
-			default:
+			case "♠":
 				cardNumber += 39;
+				break;
+			default:
+				cardNumber = 52;
 				break;
 		}
 		return new SCard(cardNumber);
@@ -173,10 +210,15 @@ public class SCard
 				suit = "Hearts";
 				symbol = "♥";
 				break;
-			default:
+			case 3:
 				suit = "Spades";
 				symbol = "♠";
 				break;
+			default:
+				rankString = "Blank";
+				rankRepresentation = "B";
+				suit = "Blank";
+				symbol = "b";
 		}
 		return new SCard(suit, rankString, rankRepresentation, symbol, cardNumber);
 
