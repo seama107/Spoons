@@ -30,7 +30,8 @@ public class SServer
 
 	private DatagramSocket sendSocket;
 	private MulticastSocket receiveSocket;
-	private InetSocketAddress broadcastAddress;
+	private InetSocketAddress broadcastSocketAddress;
+	private InetAddress broadcastAddress;
 	private byte[] buf;
 	private ArrayList<SPlayer> playerList;
 	private boolean[] spoonArray;
@@ -44,16 +45,22 @@ public class SServer
 		playerList = new ArrayList<SPlayer>();
 		try
 		{
-			//broadcastAddress = new InetSocketAddress(BCAST_ADDR, BCAST_PORT);
-			broadcastAddress = new InetSocketAddress(BCAST_ADDR, BCAST_PORT);
-			InetAddress broadcastAddressNotSocket = InetAddress.getByName(BCAST_ADDR);
-
+			broadcastSocketAddress = new InetSocketAddress(BCAST_ADDR, BCAST_PORT);
+			broadcastAddress = InetAddress.getByName(BCAST_ADDR);
 			sendSocket = new DatagramSocket();
-			//receiveSocket = new MulticastSocket(broadcastAddress);
-			receiveSocket = new MulticastSocket(BCAST_PORT);
-			//NetworkInterface networkInterface = NetworkInterface.getByName("en0");
-			//receiveSocket.joinGroup(broadcastAddress, networkInterface);
-			receiveSocket.joinGroup(broadcastAddressNotSocket);
+
+			if(System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0)
+			{
+
+				NetworkInterface networkInterface = NetworkInterface.getByName("en0");
+				receiveSocket = new MulticastSocket(broadcastSocketAddress);
+				receiveSocket.joinGroup(broadcastSocketAddress, networkInterface);
+			}
+			else
+			{
+				receiveSocket = new MulticastSocket(BCAST_PORT);
+				receiveSocket.joinGroup(broadcastAddress);
+			}
 		}
 		catch (IOException e)
 		{
@@ -69,8 +76,6 @@ public class SServer
 		ss.waitForconnections(NUM_PLAYERS);
 		ss.sendMessage("Game Starting.");
 		ss.gameMode(NUM_PLAYERS);
-		//ss.sendMessage("Echo mode Entered.");
-		//ss.echoMode();
 		ss.shutDown();
 	}
 
@@ -389,7 +394,7 @@ public class SServer
 	public void sendRaw(String message) throws IOException
 	{
 		//System.out.println(message);
-		DatagramPacket msgPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, broadcastAddress);
+		DatagramPacket msgPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, broadcastSocketAddress);
 		sendSocket.send(msgPacket);
 	}
 

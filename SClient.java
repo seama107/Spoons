@@ -31,7 +31,8 @@ public class SClient
 
 	private DatagramSocket sendSocket;
 	private MulticastSocket receiveSocket;
-	private InetSocketAddress broadcastAddress;
+	private InetSocketAddress broadcastSocketAddress;
+	private InetAddress broadcastAddress;
 	private InetSocketAddress localSendAddress;
 	private byte[] buf;
 
@@ -53,17 +54,27 @@ public class SClient
 		{
 			sendSocket = new DatagramSocket();
 			localSendAddress = new InetSocketAddress(InetAddress.getLocalHost().getHostAddress(), sendSocket.getLocalPort());
-			broadcastAddress = new  InetSocketAddress(BCAST_ADDR, BCAST_PORT);
-			InetAddress broadcastAddressNotSocket = InetAddress.getByName(BCAST_ADDR);
-			//receiveSocket = new MulticastSocket(broadcastAddress);
-			receiveSocket = new MulticastSocket(BCAST_PORT);
-			//NetworkInterface networkInterface = NetworkInterface.getByName("en0");
-			//receiveSocket.joinGroup(broadcastAddress, networkInterface);
-			receiveSocket.joinGroup(broadcastAddressNotSocket);
+			broadcastSocketAddress = new  InetSocketAddress(BCAST_ADDR, BCAST_PORT);
+			broadcastAddress = InetAddress.getByName(BCAST_ADDR);
+
+			if(System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0)
+			{
+
+				NetworkInterface networkInterface = NetworkInterface.getByName("en0");
+				receiveSocket = new MulticastSocket(broadcastSocketAddress);
+				receiveSocket.joinGroup(broadcastSocketAddress, networkInterface);
+			}
+			else
+			{
+				receiveSocket = new MulticastSocket(BCAST_PORT);
+				receiveSocket.joinGroup(broadcastAddress);
+			}
 
 			SClientListener listener = new SClientListener(localSendAddress);
 			Thread listenerThread = new Thread(listener);
 			listenerThread.start();
+
+
 
 			//Connecting with server
 			sendRaw("h" + username);
@@ -112,7 +123,7 @@ public class SClient
 
 	public void sendRaw(String message) throws IOException
 	{
-		DatagramPacket msgPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, broadcastAddress);
+		DatagramPacket msgPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, broadcastSocketAddress);
 		sendSocket.send(msgPacket);
 	}
 
@@ -148,8 +159,9 @@ public class SClient
 		}
 		catch(SocketTimeoutException e)
 		{
-			System.out.println("SocketTimeoutException");
-			e.printStackTrace();
+			System.out.println("Server Unavailable. Try again later.");
+			System.out.println("Closing down.");
+			//e.printStackTrace();
 		}
 		if(message.equals(""))
 		{

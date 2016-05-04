@@ -34,7 +34,8 @@ public class SClientListener implements Runnable
 	private int playerNumber;
 	private DatagramSocket sendSocket;
 	private MulticastSocket receiveSocket;
-	private InetSocketAddress broadcastAddress;
+	private InetSocketAddress broadcastSocketAddress;
+	private InetAddress broadcastAddress;
 	private InetSocketAddress localSendAddress;
 	private byte[] buf;
 
@@ -49,14 +50,21 @@ public class SClientListener implements Runnable
 		{
 			sendSocket = new DatagramSocket();
 			localSendAddress = lsa;
-			broadcastAddress = new  InetSocketAddress(BCAST_ADDR, BCAST_PORT);
-			InetAddress broadcastAddressNotSocket = InetAddress.getByName(BCAST_ADDR);
+			broadcastSocketAddress = new InetSocketAddress(BCAST_ADDR, BCAST_PORT);
+			broadcastAddress = InetAddress.getByName(BCAST_ADDR);
 
-			//receiveSocket = new MulticastSocket(broadcastAddress);
-			receiveSocket = new MulticastSocket(BCAST_PORT);
-			//NetworkInterface networkInterface = NetworkInterface.getByName("en0");
-			//receiveSocket.joinGroup(broadcastAddress, networkInterface);
-			receiveSocket.joinGroup(broadcastAddressNotSocket);
+			if(System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0)
+			{
+
+				NetworkInterface networkInterface = NetworkInterface.getByName("en0");
+				receiveSocket = new MulticastSocket(broadcastSocketAddress);
+				receiveSocket.joinGroup(broadcastSocketAddress, networkInterface);
+			}
+			else
+			{
+				receiveSocket = new MulticastSocket(BCAST_PORT);
+				receiveSocket.joinGroup(broadcastAddress);
+			}
 
 		}
 		catch (IOException e)
@@ -117,7 +125,7 @@ public class SClientListener implements Runnable
 
 	public void sendMessage(String message) throws IOException
 	{
-		DatagramPacket msgPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, broadcastAddress);
+		DatagramPacket msgPacket = new DatagramPacket(message.getBytes(), message.getBytes().length, broadcastSocketAddress);
 		sendSocket.send(msgPacket);
 	}
 

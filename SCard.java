@@ -3,9 +3,10 @@ SCard.java
 Author: Michael Seaman
 
 The server for the "Spoons" Final Project
-V0.4: Players are handed an initial starting hand
-The rest of the deck is stored on the server
-Created Deck and Card classes
+V0.5: Game mechanics implemented: Swapping, drawing, passing, and spoon taking
+Interface for client implemented
+extended card encryption
+SGameBoard.java created
 */
 
 import java.util.ArrayList;
@@ -92,25 +93,25 @@ public class SCard
 		if(cardNumber >= 52)
 		{
 			//for a blank card
-			lines.add("┌─────────┐");
+			lines.add("\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510");
 			for(int i = 0; i < 7; ++i)
 			{
-				lines.add("│░░░░░░░░░│");
+				lines.add("\u2502\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2502");
 			}
-			lines.add("└─────────┘");
+			lines.add("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518");
 		}
 		else
 		{
 			//not a blank card
-			lines.add("┌─────────┐");
-	        lines.add(String.format("│%2s       │", rankRepresentation));
-	        lines.add("│         │");
-	        lines.add("│         │");
-	        lines.add(String.format("│    %1s    │", symbol));
-	        lines.add("│         │");
-	        lines.add("│         │");
-	        lines.add(String.format("│       %2s│", rankRepresentation));
-	        lines.add("└─────────┘");
+			lines.add("\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510");
+	        lines.add(String.format("\u2502%2s       \u2502", rankRepresentation));
+	        lines.add("\u2502         \u2502");
+	        lines.add("\u2502         \u2502");
+	        lines.add(String.format("\u2502    %1s    \u2502", symbol));
+	        lines.add("\u2502         \u2502");
+	        lines.add("\u2502         \u2502");
+	        lines.add(String.format("\u2502       %2s\u2502", rankRepresentation));
+	        lines.add("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518");
 	    }
         return lines;
 	}
@@ -149,15 +150,15 @@ public class SCard
 		//figuring out the suit
 		switch(s)
 		{
-			case "♣":
+			case "\u2663":
 				break;
-			case "♦":
+			case "\u2666":
 				cardNumber += 13;
 				break;
-			case "♥":
+			case "\u2665":
 				cardNumber += 26;
 				break;
-			case "♠":
+			case "\u2660":
 				cardNumber += 39;
 				break;
 			default:
@@ -200,19 +201,19 @@ public class SCard
 		{
 			case 0:
 				suit = "Clubs";
-				symbol = "♣";
+				symbol = "\u2663";
 				break;
 			case 1:
 				suit = "Diamonds";
-				symbol = "♦";
+				symbol = "\u2666";
 				break;
 			case 2:
 				suit = "Hearts";
-				symbol = "♥";
+				symbol = "\u2665";
 				break;
 			case 3:
 				suit = "Spades";
-				symbol = "♠";
+				symbol = "\u2660";
 				break;
 			default:
 				rankString = "Blank";
