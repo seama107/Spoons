@@ -20,8 +20,6 @@ import java.util.ArrayList;
 public class SGameBoard
 {
 
-	final static String TEST_DATA_1 = "K♦X♥5♥K♠;;10;tttt";
-	final static String TEST_DATA_2 = "J♦X♥A♥K♦;K♥;2;tftf";
 
 	public SDeck hand;
 	public SCard nextCard;

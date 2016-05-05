@@ -93,25 +93,25 @@ public class SCard
 		if(cardNumber >= 52)
 		{
 			//for a blank card
-			lines.add("\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510");
+			lines.add("┌─────────┐");
 			for(int i = 0; i < 7; ++i)
 			{
-				lines.add("\u2502\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2502");
+				lines.add("│░░░░░░░░░│");
 			}
-			lines.add("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518");
+			lines.add("└─────────┘");
 		}
 		else
 		{
 			//not a blank card
-			lines.add("\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510");
-	        lines.add(String.format("\u2502%2s       \u2502", rankRepresentation));
-	        lines.add("\u2502         \u2502");
-	        lines.add("\u2502         \u2502");
-	        lines.add(String.format("\u2502    %1s    \u2502", symbol));
-	        lines.add("\u2502         \u2502");
-	        lines.add("\u2502         \u2502");
-	        lines.add(String.format("\u2502       %2s\u2502", rankRepresentation));
-	        lines.add("\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518");
+			lines.add("┌─────────┐");
+	        lines.add(String.format("│%2s       │", rankRepresentation));
+	        lines.add("│         │");
+	        lines.add("│         │");
+	        lines.add(String.format("│    %1s    │", symbol));
+	        lines.add("│         │");
+	        lines.add("│         │");
+	        lines.add(String.format("│       %2s│", rankRepresentation));
+	        lines.add("└─────────┘");
 	    }
         return lines;
 	}
@@ -150,15 +150,15 @@ public class SCard
 		//figuring out the suit
 		switch(s)
 		{
-			case "\u2663":
+			case "♣":
 				break;
-			case "\u2666":
+			case "♦":
 				cardNumber += 13;
 				break;
-			case "\u2665":
+			case "♥":
 				cardNumber += 26;
 				break;
-			case "\u2660":
+			case "♠":
 				cardNumber += 39;
 				break;
 			default:
@@ -201,19 +201,19 @@ public class SCard
 		{
 			case 0:
 				suit = "Clubs";
-				symbol = "\u2663";
+				symbol = "♣";
 				break;
 			case 1:
 				suit = "Diamonds";
-				symbol = "\u2666";
+				symbol = "♦";
 				break;
 			case 2:
 				suit = "Hearts";
-				symbol = "\u2665";
+				symbol = "♥";
 				break;
 			case 3:
 				suit = "Spades";
-				symbol = "\u2660";
+				symbol = "♠";
 				break;
 			default:
 				rankString = "Blank";
