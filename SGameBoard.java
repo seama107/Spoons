@@ -1,4 +1,4 @@
-/*
+﻿/*
 SGameBoard.java
 Author: Michael Seaman
 
@@ -112,7 +112,6 @@ public class SGameBoard
 		output[13] = String.format("╠%98s╣", " ").replaceAll(" ", "═" );
 		output[14] = String.format("║%98s║", " ");
 		output[15] = String.format("╚%98s╝", " ").replaceAll(" ", "═" );
-		//"176░177▒178▓179│180┤181Á182Â183À184©185╣186║187╗188╝189¢190¥191┐192└193┴194┬195├196─197┼198ã199Ã200╚201╔202╩203╦204╠205═206╬"
 		for (String line :output)
 		{
 			System.out.println(line);
