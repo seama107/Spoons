@@ -1,4 +1,4 @@
-﻿/*
+/*
 SGameBoard.java
 Author: Michael Seaman
 
