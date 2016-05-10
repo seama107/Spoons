@@ -3,10 +3,9 @@ SDeck.java
 Author: Michael Seaman
 
 The server for the "Spoons" Final Project
-V0.5: Game mechanics implemented: Swapping, drawing, passing, and spoon taking
-Interface for client implemented
-extended card encryption
-SGameBoard.java created
+V0.6 Game mechanics implemented: Game finishing naturally, spoon logic
+Moved away from ASCII
+Resized gameboard window
 */
 
 import java.util.ArrayList;
@@ -80,7 +79,7 @@ public class SDeck extends ArrayList<SCard>
 			ArrayList<String> lines = c.toPrettyString();
 			for (int i = 0; i < 9; ++i) 
 			{
-				output.set(i, output.get(i) + " " + lines.get(i));
+				output.set(i, output.get(i) + "" + lines.get(i));
 			}
 		}
 		return output;

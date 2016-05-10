@@ -3,10 +3,9 @@ SCard.java
 Author: Michael Seaman
 
 The server for the "Spoons" Final Project
-V0.5: Game mechanics implemented: Swapping, drawing, passing, and spoon taking
-Interface for client implemented
-extended card encryption
-SGameBoard.java created
+V0.6 Game mechanics implemented: Game finishing naturally, spoon logic
+Moved away from ASCII
+Resized gameboard window
 */
 
 import java.util.ArrayList;
@@ -93,25 +92,25 @@ public class SCard
 		if(cardNumber >= 52)
 		{
 			//for a blank card
-			lines.add("┌─────────┐");
+			lines.add("┌───────┐");
 			for(int i = 0; i < 7; ++i)
 			{
-				lines.add("│░░░░░░░░░│");
+				lines.add("│░░░░░░░│");
 			}
-			lines.add("└─────────┘");
+			lines.add("└───────┘");
 		}
 		else
 		{
 			//not a blank card
-			lines.add("┌─────────┐");
-	        lines.add(String.format("│%2s       │", rankRepresentation));
-	        lines.add("│         │");
-	        lines.add("│         │");
-	        lines.add(String.format("│    %1s    │", symbol));
-	        lines.add("│         │");
-	        lines.add("│         │");
-	        lines.add(String.format("│       %2s│", rankRepresentation));
-	        lines.add("└─────────┘");
+			lines.add("┌───────┐");
+	        lines.add(String.format("│%2s     │", rankRepresentation));
+	        lines.add("│       │");
+	        lines.add("│       │");
+	        lines.add(String.format("│   %1s   │", symbol));
+	        lines.add("│       │");
+	        lines.add("│       │");
+	        lines.add(String.format("│     %2s│", rankRepresentation));
+	        lines.add("└───────┘");
 	    }
         return lines;
 	}
@@ -150,7 +149,21 @@ public class SCard
 		//figuring out the suit
 		switch(s)
 		{
-			case "♣":
+			case "C":
+				break;
+			case "D":
+				cardNumber += 13;
+				break;
+			case "H":
+				cardNumber += 26;
+				break;
+			case "S":
+				cardNumber += 39;
+				break;
+			default:
+				cardNumber = 52;
+				break;
+			/*	case "♣":
 				break;
 			case "♦":
 				cardNumber += 13;
@@ -163,7 +176,7 @@ public class SCard
 				break;
 			default:
 				cardNumber = 52;
-				break;
+				break; */
 		}
 		return new SCard(cardNumber);
 	}
@@ -201,6 +214,27 @@ public class SCard
 		{
 			case 0:
 				suit = "Clubs";
+				symbol = "C";
+				break;
+			case 1:
+				suit = "Diamonds";
+				symbol = "D";
+				break;
+			case 2:
+				suit = "Hearts";
+				symbol = "H";
+				break;
+			case 3:
+				suit = "Spades";
+				symbol = "S";
+				break;
+			default:
+				rankString = "Blank";
+				rankRepresentation = "B";
+				suit = "Blank";
+				symbol = "b";
+			/*case 0:
+				suit = "Clubs";
 				symbol = "♣";
 				break;
 			case 1:
@@ -219,7 +253,7 @@ public class SCard
 				rankString = "Blank";
 				rankRepresentation = "B";
 				suit = "Blank";
-				symbol = "b";
+				symbol = "b";*/
 		}
 		return new SCard(suit, rankString, rankRepresentation, symbol, cardNumber);
 

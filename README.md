@@ -22,3 +22,7 @@ Interface for client implemented
 extended card encryption
 SGameBoard.java created
 
+V0.6 Game mechanics implemented: Game finishing naturally, spoon logic
+Moved away from ASCII
+Resized gameboard window
+
