@@ -1,6 +1,10 @@
 # Spoons
 
-### Enjoy playing Spoons, now in version 1.0
+#### Enjoy playing Spoons, now in version 1.0
+
+#### By Michael Seaman
+
+#### For any questions/found bugs, email me at 'seama107@mail.chapman.edu'
 
 
 ## Compiling & Installation
