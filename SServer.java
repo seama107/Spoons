@@ -78,12 +78,16 @@ public class SServer
 	{
 		Scanner keyboard = new Scanner(System.in);
 		System.out.println("Server started");
-		System.out.print("How many players would you like to play with? ");
+		System.out.print("How many players would you like to play with? (3 - 8)  ");
 		String userInput = keyboard.nextLine();
 		int num_players = 3;
 		try
 		{
 			num_players = Integer.parseInt(userInput);
+			if(num_players > 8)
+				num_players = 8;
+			else if(num_players < 3)
+				num_players = 3;
 		}
 		catch(Exception e)
 		{

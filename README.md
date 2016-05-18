@@ -1,15 +1,53 @@
-# spoons
+# Spoons
+
+### Enjoy playing Spoons, now in version 1.0
 
 
-## Disclaimer:
+## Compiling & Installation
 
-Enjoy playing Spoons, now in version 1.0
+No extra softwares are need aside from JVM and Java compiler.
+All files should compile with 'javac *.java'
+
 You shouldn't need to, but in the case of compile errors
 that look like unrecogizable characters, try compiling by
 specifying the UTF-8 encoding:
 
 'javac -encoding "UTF-8" *.java'
 
+This problem comes from the available charactersets on some systems being slightly
+different.
+
+## Playing the game
+
+Start the server ("java SServer") and specify the options when prompted. Then each individual player
+can start their own client ("java SClient") and join in the game. 
+
+Controls will be specified upon game-start, but just for reference:
+
+Display help menu: 'h'
+
+Quit: 'q'
+
+Draw card from draw pile: 'd'
+
+Swap the card you drew with a card in your hand: 's#'
+Where '#' is the integer position of the card you want to swap
+Ex: 's3' swaps the drawn card with the 3rd card in your hand.
+
+Pass a drawn card to the next person: 'p'
+
+Take a spoon: 't#'
+Where '#' is the spoon number
+Ex: 't1' takes the 1st spoon if it's available.
+
+
+If you don't know the rules of the game spoons, read up on them here:
+http://www.grandparents.com/grandkids/activities-games-and-crafts/spoons
+
+
+
+
+## Version History
 
 V0.1:
 Established communication between Server and Client
