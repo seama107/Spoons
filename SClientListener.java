@@ -3,9 +3,9 @@ SClientListener.java
 Author: Michael Seaman
 
 The client for the "Spoons" Final Project
-V0.6 Game mechanics implemented: Game finishing naturally, spoon logic
-Moved away from ASCII
-Resized gameboard window
+V1.0 Full game implemented
+Added option to keep server online
+Resized gameboard window (again)
 */
 
 import java.io.IOException;
@@ -27,8 +27,6 @@ public class SClientListener implements Runnable
 	final static int BCAST_PORT = 7777;
 	final static int WAIT_TIME = 1;
 
-	final static String TEST_DATA_1 = "K♦X♥5♥K♠;;10;tttt";
-	final static String TEST_DATA_2 = "J♦X♥A♥K♦;K♥;2;tftf";
 
 	private int playerNumber;
 	private DatagramSocket sendSocket;
@@ -109,6 +107,10 @@ public class SClientListener implements Runnable
 					case 6:
 						System.out.println("SERVER: " + streamInput.substring(2));
 						break;
+					case 7:
+						System.out.println("Press 'q' to quit.");
+						running = false;
+						break;
 					default:
 						break;
 				}
@@ -145,6 +147,11 @@ public class SClientListener implements Runnable
 		{
 			//Returns 1 for a 0q message, meaning the server is closing.
 			return 2;
+		}
+		if(message.equals("0r"))
+		{
+			//Returns 7 for a 0r message, meaning the server needs the clients to reconnect.
+			return 7;
 		}
 		else if(userSent && message.equals("cq"))
 		{

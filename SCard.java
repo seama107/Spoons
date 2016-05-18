@@ -3,9 +3,9 @@ SCard.java
 Author: Michael Seaman
 
 The server for the "Spoons" Final Project
-V0.6 Game mechanics implemented: Game finishing naturally, spoon logic
-Moved away from ASCII
-Resized gameboard window
+V1.0 Full game implemented
+Added option to keep server online
+Resized gameboard window (again)
 */
 
 import java.util.ArrayList;
@@ -233,27 +233,6 @@ public class SCard
 				rankRepresentation = "B";
 				suit = "Blank";
 				symbol = "b";
-			/*case 0:
-				suit = "Clubs";
-				symbol = "♣";
-				break;
-			case 1:
-				suit = "Diamonds";
-				symbol = "♦";
-				break;
-			case 2:
-				suit = "Hearts";
-				symbol = "♥";
-				break;
-			case 3:
-				suit = "Spades";
-				symbol = "♠";
-				break;
-			default:
-				rankString = "Blank";
-				rankRepresentation = "B";
-				suit = "Blank";
-				symbol = "b";*/
 		}
 		return new SCard(suit, rankString, rankRepresentation, symbol, cardNumber);
 

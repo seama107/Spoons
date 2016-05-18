@@ -3,9 +3,9 @@ SGameBoard.java
 Author: Michael Seaman
 
 The server for the "Spoons" Final Project
-V0.6 Game mechanics implemented: Game finishing naturally, spoon logic
-Moved away from ASCII
-Resized gameboard window
+V1.0 Full game implemented
+Added option to keep server online
+Resized gameboard window (again)
 
 
 Spoon art by joan stark, at:
@@ -77,9 +77,9 @@ public class SGameBoard
 		String[] output = new String[16];
 		String firstLineText =  "Cards in your draw Pile: ";
 		String[] secondLineText = { "Your Cards:", "Next Card:", "Spoons:"};
-		output[0] = String.format("╔%78s╗", " ").replaceAll(" ", "═" );
-		output[1] = String.format("║%32s%-2d%44s║", firstLineText, drawPileSize, " ");
-		output[2] = String.format("║%-32s%-16s%-30s║", secondLineText[0], secondLineText[1], secondLineText[2]);
+		output[0] = String.format("╔%76s╗", " ").replaceAll(" ", "═" );
+		output[1] = String.format("║%31s%-2d%43s║", firstLineText, drawPileSize, " ");
+		output[2] = String.format("║%-31s%-16s%-29s║", secondLineText[0], secondLineText[1], secondLineText[2]);
 
 		for (int i = 0; i < 3; ++i)
 		{
@@ -100,16 +100,16 @@ public class SGameBoard
 				{
 					currentRightSpoonString = spoon.get(j).replaceAll("X", "" + (2*i + 2));
 				}
-				output[(3*i + j)+3] = String.format("║%36s%10s%-16s%-16s║", currentHandString, currentNextCardString,
+				output[(3*i + j)+3] = String.format("%36s%10s%-16s%-16s", currentHandString, currentNextCardString,
 				 currentLeftSpoonString, currentRightSpoonString);
 			}
 
 		}
 
-		output[12] = String.format("║%18s%21s%21s%18s║", " ", "Press 'h' for help", "Press 'q' to quit", " ");
-		output[13] = String.format("╠%78s╣", " ").replaceAll(" ", "═" );
-		output[14] = String.format("║ Controls: %10s%15s%15s%20s       ║", "Draw: 'd'", "Pass: 'p'", "Swap: 's#'", "Take Spoon: 't#'");
-		output[15] = String.format("╚%78s╝", " ").replaceAll(" ", "═" );
+		output[12] = String.format("║%17s%21s%21s%17s║", " ", "Press 'h' for help", "Press 'q' to quit", " ");
+		output[13] = String.format("╠%76s╣", " ").replaceAll(" ", "═" );
+		output[14] = String.format("║ Controls: %10s%15s%15s%20s     ║", "Draw: 'd'", "Pass: 'p'", "Swap: 's#'", "Take Spoon: 't#'");
+		output[15] = String.format("╚%76s╝", " ").replaceAll(" ", "═" );
 		for (String line :output)
 		{
 			System.out.println(line);

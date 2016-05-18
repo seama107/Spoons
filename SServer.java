@@ -3,9 +3,9 @@ SServer.java
 Author: Michael Seaman
 
 The server for the "Spoons" Final Project
-V0.6 Game mechanics implemented: Game finishing naturally, spoon logic
-Moved away from ASCII
-Resized gameboard window
+V1.0 Full game implemented
+Added option to keep server online
+Resized gameboard window (again)
 */
 
 import java.io.IOException;
@@ -17,6 +17,7 @@ import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.lang.NumberFormatException;
 import java.lang.InterruptedException;
 import java.lang.ArrayIndexOutOfBoundsException;
@@ -26,7 +27,6 @@ public class SServer
 	final static String BCAST_ADDR = "224.0.0.7";
 	final static int BCAST_PORT = 7777;
 	final static int WAIT_TIME = 1;
-	final static int NUM_PLAYERS = 3;
 
 	private DatagramSocket sendSocket;
 	private InetSocketAddress localSendAddress;
@@ -76,11 +76,63 @@ public class SServer
 
 	public static void main(String[] args)  throws Exception
 	{
+		Scanner keyboard = new Scanner(System.in);
+		System.out.println("Server started");
+		System.out.print("How many players would you like to play with? ");
+		String userInput = keyboard.nextLine();
+		int num_players = 3;
+		try
+		{
+			num_players = Integer.parseInt(userInput);
+		}
+		catch(Exception e)
+		{
+			;
+		}
+
+		System.out.print("Would you like the server to remain online after a game? (Y/N)   ");
+		boolean remainOnline = false;
+		userInput = keyboard.nextLine();
+		try
+		{
+			remainOnline = Character.toLowerCase(userInput.charAt(0)) == 'y';
+		}
+		catch(Exception e)
+		{
+			;
+		}
+
+		System.out.println();
+		System.out.println(String.format("Number of players: %5d   Remain-Online: %7s", num_players, remainOnline) );
+		System.out.println();
+
 		SServer ss = new SServer();
-		ss.sendMessage("Hello!");
-		ss.waitForconnections(NUM_PLAYERS);
-		ss.sendMessage("Game Starting.");
-		ss.gameMode(NUM_PLAYERS);
+		ss.sendMessage("SERVER ONLINE");
+
+
+		while(true)
+		{
+			ss.waitForconnections(num_players);
+			ss.sendMessage("Game Starting.");
+			ss.gameMode(num_players);
+			if(remainOnline)
+			{
+				ss.sendMessage("");
+				ss.sendMessage("If you'd like to play again, the server will still be up!");
+				ss.sendMessage("Simply restart your client and reconnect.");
+				ss.sendMessage("r");
+
+				ss.clearPlayerList();
+			}
+			else
+			{
+				break;
+			}
+		}
+
+
+
+
 		ss.sendMessage("q");
 		ss.shutDown();
 	}
@@ -97,25 +149,43 @@ public class SServer
 		{
 			SRichMessage richMessage = recieveRichMessage();
 			boolean isHelloMessage = false;
-			boolean notInList = false;
-			String username = "";
-			InetSocketAddress fromAddress = null;
+			boolean isQuittingMessage = false;
+			isQuittingMessage = richMessage.message.equals("cq");
 			isHelloMessage = (richMessage.message.length() > 0 && richMessage.message.charAt(0) == 'h');
 			if(isHelloMessage)
 			{
-				username = richMessage.message.substring(1);
-				fromAddress = richMessage.fromAddress;
+				String username = richMessage.message.substring(1);
+				InetSocketAddress fromAddress = richMessage.fromAddress;
+				SPlayer newPlayer = new SPlayer(fromAddress, username);
 
-				notInList = !(playerList.contains(new SPlayer(fromAddress, username)));
+				boolean notInList = !(playerList.contains(newPlayer));
+				if(notInList)
+				{
+					playerList.add(newPlayer);
+					sendIData(username + Integer.toHexString(playerList.size() - 1));
+					sendMessage(username + " has connected. Wating for " + (maxPlayers - playerList.size()) + " more players.");
+				}
 			}
-
-			if(isHelloMessage && notInList)
+			else if(isQuittingMessage)
 			{
-				playerList.add(new SPlayer(fromAddress, username));
-				sendIData(username + Integer.toHexString(playerList.size() - 1));
-				sendMessage(username + " has connected. Wating for " + (maxPlayers - playerList.size()) + " more players.");
+				InetSocketAddress fromAddress = richMessage.fromAddress;
+
+				SPlayer leavingPlayer = new SPlayer(fromAddress, "");
+				boolean inList = playerList.contains(leavingPlayer);
+				if(inList)
+				{
+					String username = playerList.get(playerList.indexOf(leavingPlayer)).playerName;
+					playerList.remove(leavingPlayer);
+					sendMessage(username + " has disconnected. Wating for " + (maxPlayers - playerList.size()) + " more players.");
+				}
 			}
+
 		}
+	}
+
+	public void clearPlayerList()
+	{
+		playerList.clear();
 	}
 
 	public void gameMode(int num_players) throws Exception
@@ -131,6 +201,11 @@ public class SServer
 			SRichMessage toBeProcessed = recieveRichMessage();
 			switch(processClientGameMessage(toBeProcessed))
 			{
+				case 0:
+					gameStillInProgress = false;
+					gameExitedSafely = false;
+					break;
+
 				case 2:
 					gameStillInProgress = false;
 					break;
@@ -453,10 +528,10 @@ public class SServer
 		return 1;
 	}
 
-	public void playerQuitting(SPlayer sender)
+	public void playerQuitting(SPlayer sender) throws IOException
 	{
 		//placeholder for now
-		System.out.println(sender.playerName + " is quitting. placeholder text.");
+		sendMessage(sender.playerName + " is quitting. The game will now close.");
 	}
 
 	public void showAllPlayersTheirEncryptedHands() throws IOException

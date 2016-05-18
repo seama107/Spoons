@@ -3,9 +3,9 @@ SDeck.java
 Author: Michael Seaman
 
 The server for the "Spoons" Final Project
-V0.6 Game mechanics implemented: Game finishing naturally, spoon logic
-Moved away from ASCII
-Resized gameboard window
+V1.0 Full game implemented
+Added option to keep server online
+Resized gameboard window (again)
 */
 
 import java.util.ArrayList;

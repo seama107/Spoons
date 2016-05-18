@@ -3,9 +3,9 @@ SPlayer.java
 Author: Michael Seaman
 
 The server for the "Spoons" Final Project
-V0.6 Game mechanics implemented: Game finishing naturally, spoon logic
-Moved away from ASCII
-Resized gameboard window
+V1.0 Full game implemented
+Added option to keep server online
+Resized gameboard window (again)
 */
 
 import java.net.InetSocketAddress;
@@ -46,7 +46,22 @@ public class SPlayer
 
 	public boolean equals(SPlayer other)
 	{
-		return (playerName.equals(other.playerName) && playerSocket.equals(other.playerSocket));
+		return playerSocket.equals(other.playerSocket);
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if(obj == null)
+		{
+			return false;
+		}
+		if(!(SPlayer.class.isAssignableFrom(obj.getClass())))
+		{
+			return false;
+		}
+		SPlayer other = (SPlayer) obj;
+		return playerSocket.equals(other.playerSocket);
 	}
 
 
